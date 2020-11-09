@@ -138,8 +138,7 @@ def d_sigmoid(M: np.array)-> np.array:
 def softmax(X: np.array)-> np.array:
     """Apply a softmax to the input array"""
     # TODO
-    e_x = np.exp(X - np.max(X))
-    return e_x / e_x.sum()
+    return np.exp(X - np.max(X))/sum(np.exp(X))
 
 """## Feed forward NN
 
@@ -233,6 +232,7 @@ class FFNN:
         # TODO: Update the W matrix of the next_layer using the current_layer and the learning rate
         # and return the next_layer
         next_layer.W = next_layer.W-self.learning_rate*(np.dot(next_layer.D, cur_layer.Z).T)
+
         return next_layer.W
 
     
@@ -249,6 +249,7 @@ class FFNN:
         for i in range(0, len(y_pred)):  
           indx_pred  = np.argmax(y_pred[i])
           indx_batch = np.argmax(y_batch[i])
+        
           if indx_batch==indx_pred:
             nb_catch+=1
         return nb_catch/len(y_pred)
@@ -301,11 +302,11 @@ It's on 12 points because there is a lot of functions to fill but also we want t
 To have all the point your neural network needs to have a Test accuracy > 92 % !!
 """
 
-minibatch_size = 50
-nepoch = 13
-learning_rate = 0.069069
+minibatch_size = 140
+nepoch = 30
+learning_rate = 0.12
 
-ffnn = FFNN(config=[784,69,69, 10], minibatch_size=minibatch_size, learning_rate=learning_rate)
+ffnn = FFNN(config=[784,300,100, 10], minibatch_size=minibatch_size, learning_rate=learning_rate)
 
 assert X_train.shape[0] % minibatch_size == 0
 assert X_test.shape[0] % minibatch_size == 0
@@ -334,17 +335,16 @@ true_target = y_true[index_to_plot]
 # is it the same number ?
 
 # loop arround the demo test set and try to find a miss prediction
-errors = []
-for i in range(0, nsample):   
-    prediction = str(np.argmax(y_demo[i])) # Todo
-    true_target = y_true[i] # Todo
+miss=0
+for i in range(0, nsample):
+    prediction = str(np.argmax(y_demo[i]))
+    true_target = y_true[i]
     if prediction != true_target:
-        pass
-        # TODO
-        errors.append(i)
-        
-print(len(errors))
-plot_one_image(X_demo, y_true, 50)
+        # TOD0
+        print(i, prediction, true_target)
+        miss += 1
+
+print(miss)
 
 """## Open analysis
 
@@ -362,11 +362,17 @@ Also explain how the neural network behave when changing them ?
 TODO
 """
 """
-minibatch size : besoin d'etre assez elevé afin de reduire la charge de travail des calculs, le reseau de neurone etant dense.
+nepoch est le nombre de fois où l'on va entrainer notre réseau de neurone. Plus on l'entraine, meilleure devient l'accuracy mais celle-ci converge au bout d'un moment à cause du learning learning rate. 
+J'ai choisi nepoch=30 pour donner le temps au réseau de neurone de trouver la meilleure training accuracy (97.6%). Il faut que nepoch soit suffisament grand pour donner le temps au réseau de converger vers un test accuracy maximal
 
-nepoch : les test sur des valeurs plus élevé arrivait a une stagnation de l'accuracy pour une valeurs proche de celle indiqué
+config donne la taille de notre réseau de neurones en couches.Ici, nous avons 784 neurones en entrées puis 300 puis 100 puis 10 (4 couches au total avec 2 hidden layers). Si la taille de config augmente (on rajoute une couche),
+il faut baisser le learning rate.
 
-config : ajoute de bien plus de node, en effet, le systeme par defaut simplifiais trop l'analyse de l'input
+Le learning_rate est un coefficient "d'apprentissage" qui va faire varier les poids lorsque ceux-ci seront mis à jour. Plus le learning_rate est élevé plus la variation sera forte. J'ai choisi 0.09 car il y a 4 couches et
+30 nepoch donc le réseau peut beaucoup optimiser son test_accuracy (30 nepoch donc 30 aller-retour dans le réseau de neurones).Si l'on augmente le learning rate, il faut augmenter nepoch pour pouvoir donner le temps d'apprendre.
+Cependant le learning rate ne doit pas etre trop élevé sinon le test_accuracy n'aura pas le temps de se stabiliser. 
+Plus le learning rate est élevé plus le reseau apprend rapidement. Toutefois attention à ce qu'il ne soit pas trop élevé sinon le training accuracy sera très faible
 
-learning_rate : apres de nombreux tests de differents learning rate il s'est avéré que celui là etait tres efficace pour cette configuration de réseau de neurones
+minibatch_size correspond à un echantillon de notre training set. On divise notre training set en plusieurs parties de taille minibatch_size. J'ai décidé de diviser en 100. Si le minibatch a une taille très petite par rapport 
+aux hidden layers, le réseau mettra beaucoup trop de temps à apprendre. A l'inverse un minibatch trop grand ne laissera pas le temps d'apprendre(à moins d'augmenter le learning rate).
 """

@@ -315,10 +315,6 @@ Here we use a subset of the test data to try and find some miss classification.
 It will help us understand why the neural network failed sometimes to classify images.
 """
 
-def whos_that_number(target: np.array, image_index: int)-> float:
-    target = target[image_index]
-    return target
-
 nsample = 1000
 X_demo = X_test[:nsample]
 y_demo = ffnn.forward_pass(X_demo)

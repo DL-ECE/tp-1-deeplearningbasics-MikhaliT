@@ -209,7 +209,6 @@ class FFNN:
         self.layers[0].Z = input_data;
         for i in range(1, self.nlayers):
           self.layers[i].Z = self.one_step_forward(self.layers[i-1].Z, self.layers[i])
-        # pass
         return self.layers[-1].Z
     
     def one_step_backward(self, prev_layer: Layer, cur_layer: Layer)-> np.array:
@@ -223,7 +222,6 @@ class FFNN:
         # (you should only use self.layers[1:])
         for i in range(len(self.layers[1:])-1, 0, -1 ):
           self.layers[i].D = self.one_step_backward(self.layers[i+1], self.layers[i])
-        # pass
     
     def update_weights(self, cur_layer: Layer, next_layer: Layer)-> np.array:
         # TODO: Update the W matrix of the next_layer using the current_layer and the learning rate
@@ -235,7 +233,6 @@ class FFNN:
         # TODO: Update all W matrix using the update_weights function
         for i in range(1, self.nlayers-1):
           self.layers[i].W = self.update_weights(self.layers[i-1], self.layers[i])
-        #pass
         
     def get_error(self, y_pred: np.array, y_batch: np.array)-> float:
         # TODO: return the accuracy on the predictions
@@ -339,6 +336,7 @@ for i in range(0, nsample):
         pass
         # TODO
         errors.append(i)
+        
 print(len(errors))
 plot_one_image(X_demo, y_true, 50)
 

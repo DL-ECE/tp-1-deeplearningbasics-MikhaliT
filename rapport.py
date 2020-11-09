@@ -334,15 +334,16 @@ true_target = np.argmax(y_true[index_to_plot])
 # is it the same number ? 
 print("IA think it's a " + str(prediction))
 
+if__name__ = "__main__":
 # loop arround the demo test set and try to find a miss prediction
 errors = []
 for i in range(0, nsample):   
     prediction = str(np.argmax(y_demo[i])) # Todo
     true_target = y_true[i] # Todo
     if prediction != true_target:
+        pass
         # TODO
         errors.append(i)
-        pass
 print(len(errors))
 plot_one_image(X_demo, y_true, 50)
 
